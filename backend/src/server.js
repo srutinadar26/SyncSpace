@@ -5,7 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import connectDB from "./config/database.js";
 import testRoutes from "./routes/testRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
-
+import taskRoutes from "./routes/taskRoutes.js";
 
 dotenv.config();
 
@@ -22,6 +22,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.json({
