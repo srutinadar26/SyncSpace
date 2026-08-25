@@ -1,0 +1,31 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/database.js";
+
+dotenv.config();
+
+const app = express();
+
+connectDB();
+
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json({
+    name: "SyncSpace",
+    description: "Real-Time Collaborative Workspace for Student Teams",
+    status: "operational"
+  });
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`SyncSpace server running on port ${PORT}`);
+});
