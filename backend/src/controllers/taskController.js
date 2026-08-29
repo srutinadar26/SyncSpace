@@ -1,5 +1,6 @@
 import Task from "../models/Task.js";
 import Workspace from "../models/Workspace.js";
+import { emitToWorkspace } from "../sockets/index.js";
 
 export const createTask = async (req, res) => {
   try {
@@ -49,6 +50,8 @@ export const createTask = async (req, res) => {
     const populatedTask = await Task.findById(task._id)
       .populate("assignedTo", "name email")
       .populate("createdBy", "name email");
+
+    emitToWorkspace(workspaceId, "task:created", { task: populatedTask });
 
     res.status(201).json({
       message: "Task created successfully",
@@ -145,6 +148,8 @@ export const updateTaskStatus = async (req, res) => {
       .populate("assignedTo", "name email")
       .populate("createdBy", "name email");
 
+    emitToWorkspace(task.workspace.toString(), "task:updated", { task: updatedTask });
+
     res.status(200).json({
       message: "Task status updated successfully",
       task: updatedTask,
@@ -202,6 +207,8 @@ export const updateTask = async (req, res) => {
       .populate("assignedTo", "name email")
       .populate("createdBy", "name email");
 
+    emitToWorkspace(task.workspace.toString(), "task:updated", { task: updatedTask });
+
     res.status(200).json({
       message: "Task updated successfully",
       task: updatedTask,
@@ -240,6 +247,8 @@ export const deleteTask = async (req, res) => {
     }
 
     await Task.findByIdAndDelete(taskId);
+
+    emitToWorkspace(task.workspace.toString(), "task:deleted", { taskId });
 
     res.status(200).json({
       message: "Task deleted successfully",

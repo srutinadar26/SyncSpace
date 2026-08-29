@@ -1,5 +1,6 @@
 import Workspace from "../models/Workspace.js";
 import User from "../models/User.js";
+import { emitToWorkspace } from "../sockets/index.js";
 
 export const createWorkspace = async (req, res) => {
   try {
@@ -150,6 +151,8 @@ export const addMember = async (req, res) => {
       .populate("owner", "name email")
       .populate("members.user", "name email");
 
+    emitToWorkspace(id, "workspace:member_added", { workspace: updatedWorkspace });
+
     res.status(200).json({
       message: "Member added successfully",
       workspace: updatedWorkspace,
@@ -196,6 +199,8 @@ export const removeMember = async (req, res) => {
     );
 
     await workspace.save();
+
+    emitToWorkspace(id, "workspace:member_removed", { memberId });
 
     res.status(200).json({
       message: "Member removed successfully",

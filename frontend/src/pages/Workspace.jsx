@@ -5,6 +5,7 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import KanbanColumn from "../components/KanbanColumn";
 import { useAuth } from "../context/AuthContext";
+import { getSocket } from "../socket";
 
 const COLUMNS = ["TODO", "IN_PROGRESS", "DONE"];
 
@@ -53,6 +54,47 @@ export default function Workspace() {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  // Real-time sync: join the workspace room and apply live task/member events
+  // from other connected clients as they happen.
+  useEffect(() => {
+    const socket = getSocket();
+    socket.connect();
+    socket.emit("workspace:join", id);
+
+    const handleTaskCreated = ({ task }) => {
+      setTasks((prev) => (prev.some((t) => t._id === task._id) ? prev : [task, ...prev]));
+    };
+
+    const handleTaskUpdated = ({ task }) => {
+      setTasks((prev) => prev.map((t) => (t._id === task._id ? task : t)));
+    };
+
+    const handleTaskDeleted = ({ taskId }) => {
+      setTasks((prev) => prev.filter((t) => t._id !== taskId));
+    };
+
+    const handleMemberChange = ({ workspace: updatedWorkspace }) => {
+      if (updatedWorkspace) setWorkspace(updatedWorkspace);
+    };
+
+    socket.on("task:created", handleTaskCreated);
+    socket.on("task:updated", handleTaskUpdated);
+    socket.on("task:deleted", handleTaskDeleted);
+    socket.on("workspace:member_added", handleMemberChange);
+    socket.on("workspace:member_removed", () => loadData());
+
+    return () => {
+      socket.emit("workspace:leave", id);
+      socket.off("task:created", handleTaskCreated);
+      socket.off("task:updated", handleTaskUpdated);
+      socket.off("task:deleted", handleTaskDeleted);
+      socket.off("workspace:member_added", handleMemberChange);
+      socket.off("workspace:member_removed");
+      socket.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
