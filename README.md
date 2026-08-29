@@ -81,52 +81,69 @@ Redis (Live Presence State)              MongoDB Atlas (Persistent Data)
 ```bash
 node >= 18.x
 npm >= 9.x
-MongoDB Atlas account
-Redis instance
+MongoDB Atlas account (or a local MongoDB instance)
 ```
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/syncspace.git
-cd syncspace
+git clone https://github.com/srutinadar26/SyncSpace.git
+cd SyncSpace
 
-# Install server dependencies
-cd server
+# Install backend dependencies
+cd backend
 npm install
 
-# Install client dependencies
-cd ../client
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
 ### Environment Setup
 
-Create a `.env` file in `/server`:
+Copy the example env files and fill in your own values:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+`backend/.env`:
 
 ```env
-MONGO_URI=your_mongodb_atlas_uri
-REDIS_URL=your_redis_url
-JWT_SECRET=your_jwt_secret
-JWT_REFRESH_SECRET=your_refresh_secret
 PORT=5000
+MONGO_URI=your_mongodb_atlas_uri
+JWT_SECRET=your_jwt_secret
 CLIENT_URL=http://localhost:5173
+```
+
+`frontend/.env`:
+
+```env
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ### Run Locally
 
 ```bash
 # Start the backend
-cd server
+cd backend
 npm run dev
 
 # Start the frontend (in a new terminal)
-cd client
+cd frontend
 npm run dev
 ```
 
 Visit `http://localhost:5173` 🎉
+
+### What's built so far (Phase 1)
+
+- JWT auth (signup/login) with roles: `student`, `lead`, `mentor`
+- Workspace creation, listing, and member invite/remove (lead/mentor only)
+- Kanban board per workspace: create/edit/delete tasks, drag-and-drop between Backlog / In Progress / Done, priority + deadline + assignee
+- Redis, Socket.io real-time sync, Yjs collaborative editor, AI features, and GitHub integration are not implemented yet — see Roadmap below.
 
 ---
 
