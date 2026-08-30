@@ -13,10 +13,16 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "axios": "^1.19.0",
+    "quill": "^2.0.3",
+    "quill-cursors": "^5.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.18.2",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "y-indexeddb": "^9.0.12",
+    "y-quill": "^1.0.0",
+    "y-socket.io": "^1.1.3",
+    "yjs": "^13.6.32"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

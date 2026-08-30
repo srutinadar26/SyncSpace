@@ -4,6 +4,7 @@ import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import KanbanColumn from "../components/KanbanColumn";
+import CollaborativeEditor from "../components/CollaborativeEditor";
 import { useAuth } from "../context/AuthContext";
 import { getSocket } from "../socket";
 
@@ -19,6 +20,7 @@ export default function Workspace() {
   const [error, setError] = useState("");
 
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("board"); // "board" | "editor"
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
@@ -351,19 +353,47 @@ export default function Workspace() {
 
         {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-          <div className="flex flex-col gap-4 sm:flex-row">
-            {COLUMNS.map((col) => (
-              <KanbanColumn
-                key={col}
-                id={col}
-                tasks={tasks.filter((t) => t.status === col)}
-                onDelete={handleDeleteTask}
-              />
-            ))}
-          </div>
-        </DndContext>
+        <div className="mb-4 flex gap-1 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("board")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "board"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Board
+          </button>
+          <button
+            onClick={() => setActiveTab("editor")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "editor"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Shared doc
+          </button>
+        </div>
+
+        {activeTab === "board" ? (
+          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              {COLUMNS.map((col) => (
+                <KanbanColumn
+                  key={col}
+                  id={col}
+                  tasks={tasks.filter((t) => t.status === col)}
+                  onDelete={handleDeleteTask}
+                />
+              ))}
+            </div>
+          </DndContext>
+        ) : (
+          <CollaborativeEditor workspaceId={id} />
+        )}
       </main>
     </div>
+
   );
 }

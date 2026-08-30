@@ -138,12 +138,13 @@ npm run dev
 
 Visit `http://localhost:5173` 🎉
 
-### What's built so far (Phase 1)
+### What's built so far (Phase 1–3)
 
 - JWT auth (signup/login) with roles: `student`, `lead`, `mentor`
 - Workspace creation, listing, and member invite/remove (lead/mentor only)
-- Kanban board per workspace: create/edit/delete tasks, drag-and-drop between Backlog / In Progress / Done, priority + deadline + assignee
-- Redis, Socket.io real-time sync, Yjs collaborative editor, AI features, and GitHub integration are not implemented yet — see Roadmap below.
+- Kanban board per workspace: create/edit/delete tasks, drag-and-drop between Backlog / In Progress / Done, priority + deadline + assignee — synced live across clients via Socket.io
+- Real-time collaborative document per workspace (Yjs CRDT + Quill): live multi-user rich text editing, presence-aware cursors, version history with save/restore snapshots, and offline-resilient sync (edits persist to IndexedDB and merge automatically on reconnect)
+- AI features and GitHub integration are not implemented yet — see Roadmap below.
 
 ---
 
