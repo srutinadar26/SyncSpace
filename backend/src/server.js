@@ -12,6 +12,7 @@ import activityRoutes from "./routes/activityRoutes.js";
 import milestoneRoutes from "./routes/milestoneRoutes.js";
 import insightsRoutes from "./routes/insightsRoutes.js";
 import securityRoutes from "./routes/securityRoutes.js";
+import goalRoutes from "./routes/goalRoutes.js";
 import { initSocket } from "./sockets/index.js";
 import { initYjs } from "./sockets/yjs.js";
 import { apiLimiter } from "./middleware/rateLimiter.js";
@@ -46,6 +47,7 @@ app.use("/api/activity", activityRoutes);
 app.use("/api/milestones", milestoneRoutes);
 app.use("/api/insights", insightsRoutes);
 app.use("/api/security", securityRoutes);
+app.use("/api/goals", goalRoutes);
 
 app.get("/", (req, res) => {
   res.json({

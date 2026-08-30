@@ -36,6 +36,9 @@ const activityLogSchema = new mongoose.Schema(
         "milestone_created",
         "milestone_updated",
         "milestone_deleted",
+        "goal_created",
+        "goal_updated",
+        "goal_deleted",
       ],
     },
     // Short human-readable summary, e.g. "Priya moved 'Set up auth' to Done"

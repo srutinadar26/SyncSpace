@@ -13,6 +13,9 @@ const typeIcons = {
   milestone_created: "🎯",
   milestone_updated: "🎯",
   milestone_deleted: "🎯",
+  goal_created: "🏆",
+  goal_updated: "🏆",
+  goal_deleted: "🏆",
 };
 
 export default function ActivityFeed({ workspaceId }) {

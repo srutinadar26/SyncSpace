@@ -7,6 +7,7 @@ import KanbanColumn from "../components/KanbanColumn";
 import CollaborativeEditor from "../components/CollaborativeEditor";
 import ActivityFeed from "../components/ActivityFeed";
 import MilestoneTracker from "../components/MilestoneTracker";
+import GoalsTracker from "../components/GoalsTracker";
 import Insights from "../components/Insights";
 import DependencyModal from "../components/DependencyModal";
 import { useAuth } from "../context/AuthContext";
@@ -391,6 +392,16 @@ export default function Workspace() {
             Milestones
           </button>
           <button
+            onClick={() => setActiveTab("goals")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "goals"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Goals
+          </button>
+          <button
             onClick={() => setActiveTab("activity")}
             className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "activity"
@@ -430,6 +441,8 @@ export default function Workspace() {
           <CollaborativeEditor workspaceId={id} />
         ) : activeTab === "milestones" ? (
           <MilestoneTracker workspaceId={id} />
+        ) : activeTab === "goals" ? (
+          <GoalsTracker workspaceId={id} allTasks={tasks} />
         ) : activeTab === "activity" ? (
           <ActivityFeed workspaceId={id} />
         ) : (
