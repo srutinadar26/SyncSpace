@@ -144,6 +144,8 @@ Visit `http://localhost:5173` 🎉
 - Workspace creation, listing, and member invite/remove (lead/mentor only)
 - Kanban board per workspace: create/edit/delete tasks, drag-and-drop between Backlog / In Progress / Done, priority + deadline + assignee — synced live across clients via Socket.io
 - Real-time collaborative document per workspace (Yjs CRDT + Quill): live multi-user rich text editing, presence-aware cursors, version history with save/restore snapshots, and offline-resilient sync (edits persist to IndexedDB and merge automatically on reconnect)
+- Activity feed & audit log: every task/member/milestone change is logged with structured before/after diffs and broadcast live; permission changes (member add/remove) are flagged separately as a filterable "sensitive" log
+- Milestone/deadline tracker: per-workspace milestones with due dates, live countdown badges (color-coded by urgency), and completion tracking. Note: this is an in-app countdown indicator, not automated email/push reminders — those aren't implemented yet.
 - AI features and GitHub integration are not implemented yet — see Roadmap below.
 
 ---

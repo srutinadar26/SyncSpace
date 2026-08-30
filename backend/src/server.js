@@ -8,6 +8,8 @@ import testRoutes from "./routes/testRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js";
+import milestoneRoutes from "./routes/milestoneRoutes.js";
 import { initSocket } from "./sockets/index.js";
 import { initYjs } from "./sockets/yjs.js";
 
@@ -31,6 +33,8 @@ app.use("/api/test", testRoutes);
 app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/activity", activityRoutes);
+app.use("/api/milestones", milestoneRoutes);
 
 app.get("/", (req, res) => {
   res.json({

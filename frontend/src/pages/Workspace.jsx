@@ -5,6 +5,8 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import KanbanColumn from "../components/KanbanColumn";
 import CollaborativeEditor from "../components/CollaborativeEditor";
+import ActivityFeed from "../components/ActivityFeed";
+import MilestoneTracker from "../components/MilestoneTracker";
 import { useAuth } from "../context/AuthContext";
 import { getSocket } from "../socket";
 
@@ -374,6 +376,26 @@ export default function Workspace() {
           >
             Shared doc
           </button>
+          <button
+            onClick={() => setActiveTab("milestones")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "milestones"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Milestones
+          </button>
+          <button
+            onClick={() => setActiveTab("activity")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "activity"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Activity
+          </button>
         </div>
 
         {activeTab === "board" ? (
@@ -389,8 +411,12 @@ export default function Workspace() {
               ))}
             </div>
           </DndContext>
-        ) : (
+        ) : activeTab === "editor" ? (
           <CollaborativeEditor workspaceId={id} />
+        ) : activeTab === "milestones" ? (
+          <MilestoneTracker workspaceId={id} />
+        ) : (
+          <ActivityFeed workspaceId={id} />
         )}
       </main>
     </div>

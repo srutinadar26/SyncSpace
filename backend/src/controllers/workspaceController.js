@@ -1,6 +1,7 @@
 import Workspace from "../models/Workspace.js";
 import User from "../models/User.js";
 import { emitToWorkspace } from "../sockets/index.js";
+import { logActivity } from "../services/activityLogger.js";
 
 export const createWorkspace = async (req, res) => {
   try {
@@ -153,6 +154,14 @@ export const addMember = async (req, res) => {
 
     emitToWorkspace(id, "workspace:member_added", { workspace: updatedWorkspace });
 
+    await logActivity({
+      workspaceId: id,
+      actorId: req.user._id,
+      type: "member_added",
+      message: `${req.user.name} added ${userToAdd.name} as ${role || "student"}`,
+      diff: [{ field: "member", oldValue: null, newValue: { email: userToAdd.email, role: role || "student" } }],
+    });
+
     res.status(200).json({
       message: "Member added successfully",
       workspace: updatedWorkspace,
@@ -194,6 +203,11 @@ export const removeMember = async (req, res) => {
       });
     }
 
+    const removedMember = workspace.members.find(
+      (member) => member.user.toString() === memberId
+    );
+    const removedUser = removedMember ? await User.findById(memberId).select("name email") : null;
+
     workspace.members = workspace.members.filter(
       (member) => member.user.toString() !== memberId
     );
@@ -201,6 +215,14 @@ export const removeMember = async (req, res) => {
     await workspace.save();
 
     emitToWorkspace(id, "workspace:member_removed", { memberId });
+
+    await logActivity({
+      workspaceId: id,
+      actorId: req.user._id,
+      type: "member_removed",
+      message: `${req.user.name} removed ${removedUser?.name || "a member"} from the workspace`,
+      diff: [{ field: "member", oldValue: removedUser ? { email: removedUser.email } : null, newValue: null }],
+    });
 
     res.status(200).json({
       message: "Member removed successfully",
