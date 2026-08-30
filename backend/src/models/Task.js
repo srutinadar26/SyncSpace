@@ -48,6 +48,19 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
+    // Tasks that must be completed before this one can start.
+    // Used for dependency-chain warnings and the risk engine's
+    // "blocked task" count.
+    dependsOn: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Task",
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,

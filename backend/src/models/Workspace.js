@@ -43,6 +43,14 @@ const workspaceSchema = new mongoose.Schema(
       type: [workspaceMemberSchema],
       default: [],
     },
+
+    // Optional target date the team is aiming to finish by. Used by the
+    // Smart Deadline Prediction feature to flag if the current velocity
+    // is on track to miss it.
+    targetDeadline: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

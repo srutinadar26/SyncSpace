@@ -7,6 +7,8 @@ import KanbanColumn from "../components/KanbanColumn";
 import CollaborativeEditor from "../components/CollaborativeEditor";
 import ActivityFeed from "../components/ActivityFeed";
 import MilestoneTracker from "../components/MilestoneTracker";
+import Insights from "../components/Insights";
+import DependencyModal from "../components/DependencyModal";
 import { useAuth } from "../context/AuthContext";
 import { getSocket } from "../socket";
 
@@ -36,6 +38,8 @@ export default function Workspace() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("student");
   const [inviteMsg, setInviteMsg] = useState("");
+
+  const [dependencyTask, setDependencyTask] = useState(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -396,6 +400,16 @@ export default function Workspace() {
           >
             Activity
           </button>
+          <button
+            onClick={() => setActiveTab("insights")}
+            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+              activeTab === "insights"
+                ? "border-[var(--color-accent)] text-[var(--color-accent)]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Insights
+          </button>
         </div>
 
         {activeTab === "board" ? (
@@ -407,6 +421,7 @@ export default function Workspace() {
                   id={col}
                   tasks={tasks.filter((t) => t.status === col)}
                   onDelete={handleDeleteTask}
+                  onManageDependencies={setDependencyTask}
                 />
               ))}
             </div>
@@ -415,8 +430,27 @@ export default function Workspace() {
           <CollaborativeEditor workspaceId={id} />
         ) : activeTab === "milestones" ? (
           <MilestoneTracker workspaceId={id} />
-        ) : (
+        ) : activeTab === "activity" ? (
           <ActivityFeed workspaceId={id} />
+        ) : (
+          <Insights
+            workspaceId={id}
+            targetDeadline={workspace.targetDeadline}
+            onTargetDeadlineChange={(newDeadline) =>
+              setWorkspace((prev) => ({ ...prev, targetDeadline: newDeadline }))
+            }
+          />
+        )}
+
+        {dependencyTask && (
+          <DependencyModal
+            task={dependencyTask}
+            allTasks={tasks}
+            onClose={() => setDependencyTask(null)}
+            onSaved={(updatedTask) => {
+              setTasks((prev) => prev.map((t) => (t._id === updatedTask._id ? updatedTask : t)));
+            }}
+          />
         )}
       </main>
     </div>

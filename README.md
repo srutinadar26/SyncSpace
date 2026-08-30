@@ -146,6 +146,7 @@ Visit `http://localhost:5173` 🎉
 - Real-time collaborative document per workspace (Yjs CRDT + Quill): live multi-user rich text editing, presence-aware cursors, version history with save/restore snapshots, and offline-resilient sync (edits persist to IndexedDB and merge automatically on reconnect)
 - Activity feed & audit log: every task/member/milestone change is logged with structured before/after diffs and broadcast live; permission changes (member add/remove) are flagged separately as a filterable "sensitive" log
 - Milestone/deadline tracker: per-workspace milestones with due dates, live countdown badges (color-coded by urgency), and completion tracking. Note: this is an in-app countdown indicator, not automated email/push reminders — those aren't implemented yet.
+- Project intelligence layer (deterministic — no ML): task dependencies with cycle detection and a "blocked" indicator on the board; a weighted risk score (overdue tasks, backlog size, workload imbalance, blocked tasks, velocity slowdown) with a plain-language recommendation; a team workload balancer that flags overloaded members and suggests one-click task reassignments; and a linear deadline predictor that projects a completion date from current velocity and flags if it's past your target deadline
 - AI features and GitHub integration are not implemented yet — see Roadmap below.
 
 ---

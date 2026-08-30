@@ -8,7 +8,7 @@ const columnStyles = {
   DONE: { label: "Done", dot: "bg-emerald-500" },
 };
 
-export default function KanbanColumn({ id, tasks, onDelete }) {
+export default function KanbanColumn({ id, tasks, onDelete, onManageDependencies }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   const meta = columnStyles[id];
 
@@ -30,7 +30,7 @@ export default function KanbanColumn({ id, tasks, onDelete }) {
       <SortableContext items={tasks.map((t) => t._id)} strategy={verticalListSortingStrategy}>
         <div className="flex flex-1 flex-col gap-2">
           {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} onDelete={onDelete} />
+            <TaskCard key={task._id} task={task} onDelete={onDelete} onManageDependencies={onManageDependencies} />
           ))}
           {tasks.length === 0 && (
             <p className="mt-4 text-center text-xs text-gray-400">Drop tasks here</p>
