@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
+import { SkeletonCard } from "../components/Skeleton";
 
 export default function Dashboard() {
   const [workspaces, setWorkspaces] = useState([]);
@@ -45,14 +47,14 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7fb]">
+    <div className="min-h-screen bg-[#f7f7fb] dark:bg-gray-950">
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Your workspaces</h1>
-            <p className="text-sm text-gray-500">Projects, hackathons, and group assignments.</p>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Your workspaces</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Projects, hackathons, and group assignments.</p>
           </div>
           <button
             onClick={() => setShowForm((s) => !s)}
@@ -65,32 +67,32 @@ export default function Dashboard() {
         {showForm && (
           <form
             onSubmit={handleCreate}
-            className="mb-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="mb-8 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Name</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
                 <input
                   type="text"
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
                   placeholder="Smart India Hackathon Team"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                 <input
                   type="text"
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
                   placeholder="Optional"
                 />
               </div>
             </div>
-            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
             <button
               type="submit"
               disabled={creating}
@@ -102,27 +104,37 @@ export default function Dashboard() {
         )}
 
         {loading ? (
-          <p className="text-sm text-gray-500">Loading workspaces…</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
         ) : workspaces.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center">
-            <p className="text-gray-500">No workspaces yet. Create your first one to get started.</p>
+          <div className="rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-10 text-center">
+            <p className="text-gray-500 dark:text-gray-400">No workspaces yet. Create your first one to get started.</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {workspaces.map((ws) => (
-              <Link
+            {workspaces.map((ws, i) => (
+              <motion.div
                 key={ws._id}
-                to={`/workspaces/${ws._id}`}
-                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-[var(--color-accent)] hover:shadow-md"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: Math.min(i * 0.04, 0.3) }}
               >
-                <h2 className="font-semibold text-gray-900">{ws.name}</h2>
-                <p className="mt-1 line-clamp-2 text-sm text-gray-500">
-                  {ws.description || "No description"}
-                </p>
-                <p className="mt-3 text-xs text-gray-400">
-                  {ws.members.length} member{ws.members.length !== 1 ? "s" : ""}
-                </p>
-              </Link>
+                <Link
+                  to={`/workspaces/${ws._id}`}
+                  className="block rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm transition hover:border-[var(--color-accent)] hover:shadow-md"
+                >
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100">{ws.name}</h2>
+                  <p className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+                    {ws.description || "No description"}
+                  </p>
+                  <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+                    {ws.members.length} member{ws.members.length !== 1 ? "s" : ""}
+                  </p>
+                </Link>
+              </motion.div>
             ))}
           </div>
         )}

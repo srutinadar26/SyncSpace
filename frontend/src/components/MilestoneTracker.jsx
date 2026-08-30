@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { getSocket } from "../socket";
+import { SkeletonList } from "./Skeleton";
 
 const daysUntil = (dueDate) => {
   const ms = new Date(dueDate).setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0);
@@ -8,12 +9,12 @@ const daysUntil = (dueDate) => {
 };
 
 const countdownBadge = (dueDate, completed) => {
-  if (completed) return { text: "Done", className: "bg-emerald-100 text-emerald-700" };
+  if (completed) return { text: "Done", className: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" };
   const days = daysUntil(dueDate);
-  if (days < 0) return { text: `${Math.abs(days)}d overdue`, className: "bg-red-100 text-red-700" };
-  if (days === 0) return { text: "Due today", className: "bg-red-100 text-red-700" };
-  if (days <= 3) return { text: `${days}d left`, className: "bg-amber-100 text-amber-700" };
-  return { text: `${days}d left`, className: "bg-gray-100 text-gray-600" };
+  if (days < 0) return { text: `${Math.abs(days)}d overdue`, className: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" };
+  if (days === 0) return { text: "Due today", className: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" };
+  if (days <= 3) return { text: `${days}d left`, className: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" };
+  return { text: `${days}d left`, className: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" };
 };
 
 export default function MilestoneTracker({ workspaceId }) {
@@ -97,19 +98,19 @@ export default function MilestoneTracker({ workspaceId }) {
   const sorted = [...milestones].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2">
-        <h3 className="text-sm font-semibold text-gray-700">Milestones & deadlines</h3>
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-2">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Milestones & deadlines</h3>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-800/50"
         >
           {showForm ? "Cancel" : "+ New milestone"}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="border-b border-gray-200 bg-gray-50 p-4">
+        <form onSubmit={handleCreate} className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 p-4">
           <div className="grid gap-3 sm:grid-cols-3">
             <input
               type="text"
@@ -117,14 +118,14 @@ export default function MilestoneTracker({ workspaceId }) {
               placeholder="Milestone title"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)] sm:col-span-2"
+              className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)] sm:col-span-2"
             />
             <input
               type="date"
               required
               value={form.dueDate}
               onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
+              className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
             />
           </div>
           <input
@@ -132,7 +133,7 @@ export default function MilestoneTracker({ workspaceId }) {
             placeholder="Description (optional)"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="mt-3 w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
+            className="mt-3 w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
           />
           <button
             type="submit"
@@ -146,13 +147,13 @@ export default function MilestoneTracker({ workspaceId }) {
 
       <div className="p-2">
         {loading ? (
-          <p className="px-2 py-6 text-center text-xs text-gray-400">Loading…</p>
+          <SkeletonList rows={3} />
         ) : sorted.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-gray-400">
+          <p className="px-2 py-6 text-center text-xs text-gray-400 dark:text-gray-500">
             No milestones yet — add your first deadline.
           </p>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-800">
             {sorted.map((m) => {
               const badge = countdownBadge(m.dueDate, m.completed);
               return (
@@ -161,14 +162,14 @@ export default function MilestoneTracker({ workspaceId }) {
                     type="checkbox"
                     checked={m.completed}
                     onChange={() => toggleComplete(m)}
-                    className="mt-1 rounded border-gray-300"
+                    className="mt-1 rounded border-gray-300 dark:border-gray-700"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className={`text-sm font-medium ${m.completed ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                    <p className={`text-sm font-medium ${m.completed ? "text-gray-400 dark:text-gray-500 line-through" : "text-gray-900 dark:text-gray-100"}`}>
                       {m.title}
                     </p>
-                    {m.description && <p className="text-xs text-gray-500">{m.description}</p>}
-                    <p className="mt-1 text-[11px] text-gray-400">
+                    {m.description && <p className="text-xs text-gray-500 dark:text-gray-400">{m.description}</p>}
+                    <p className="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
                       Due {new Date(m.dueDate).toLocaleDateString()}
                     </p>
                   </div>

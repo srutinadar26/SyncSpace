@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import KanbanColumn from "../components/KanbanColumn";
@@ -10,6 +11,7 @@ import MilestoneTracker from "../components/MilestoneTracker";
 import GoalsTracker from "../components/GoalsTracker";
 import Insights from "../components/Insights";
 import DependencyModal from "../components/DependencyModal";
+import { SkeletonBoard } from "../components/Skeleton";
 import { useAuth } from "../context/AuthContext";
 import { getSocket } from "../socket";
 
@@ -190,31 +192,33 @@ export default function Workspace() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f7fb]">
+      <div className="min-h-screen bg-[#f7f7fb] dark:bg-gray-950">
         <Navbar />
-        <p className="mx-auto max-w-6xl px-4 py-8 text-sm text-gray-500">Loading workspace…</p>
+        <div className="mx-auto max-w-6xl px-4 py-8">
+          <SkeletonBoard />
+        </div>
       </div>
     );
   }
 
   if (!workspace) {
     return (
-      <div className="min-h-screen bg-[#f7f7fb]">
+      <div className="min-h-screen bg-[#f7f7fb] dark:bg-gray-950">
         <Navbar />
-        <p className="mx-auto max-w-6xl px-4 py-8 text-sm text-red-600">{error || "Workspace not found."}</p>
+        <p className="mx-auto max-w-6xl px-4 py-8 text-sm text-red-600 dark:text-red-400">{error || "Workspace not found."}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7fb]">
+    <div className="min-h-screen bg-[#f7f7fb] dark:bg-gray-950">
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-4 py-8">
         <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">{workspace.name}</h1>
-            <p className="text-sm text-gray-500">{workspace.description || "No description"}</p>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{workspace.name}</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{workspace.description || "No description"}</p>
             <div className="mt-2 flex -space-x-2">
               {workspace.members.map((m) => (
                 <span
@@ -232,7 +236,7 @@ export default function Workspace() {
             {canManageMembers && (
               <button
                 onClick={() => setShowInvite((s) => !s)}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-white"
+                className="rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition hover:bg-white dark:hover:bg-gray-900"
               >
                 {showInvite ? "Close" : "Invite member"}
               </button>
@@ -249,25 +253,25 @@ export default function Workspace() {
         {showInvite && (
           <form
             onSubmit={handleInvite}
-            className="mb-6 flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+            className="mb-6 flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-sm"
           >
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-700">Email</label>
+              <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email</label>
               <input
                 type="email"
                 required
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
+                className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
                 placeholder="teammate@college.edu"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-700">Role</label>
+              <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Role</label>
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value)}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
+                className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
               >
                 <option value="student">Student</option>
                 <option value="lead">Team Lead</option>
@@ -280,33 +284,33 @@ export default function Workspace() {
             >
               Add
             </button>
-            {inviteMsg && <p className="text-xs text-gray-500">{inviteMsg}</p>}
+            {inviteMsg && <p className="text-xs text-gray-500 dark:text-gray-400">{inviteMsg}</p>}
           </form>
         )}
 
         {showTaskForm && (
           <form
             onSubmit={handleCreateTask}
-            className="mb-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Title</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                 <input
                   type="text"
                   required
                   value={taskForm.title}
                   onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
                   placeholder="Set up auth API"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Assignee</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Assignee</label>
                 <select
                   value={taskForm.assignedTo}
                   onChange={(e) => setTaskForm({ ...taskForm, assignedTo: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
                 >
                   <option value="">Unassigned</option>
                   {workspace.members.map((m) => (
@@ -317,11 +321,11 @@ export default function Workspace() {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Priority</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Priority</label>
                 <select
                   value={taskForm.priority}
                   onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
                 >
                   <option value="LOW">Low</option>
                   <option value="MEDIUM">Medium</option>
@@ -329,21 +333,21 @@ export default function Workspace() {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Deadline</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Deadline</label>
                 <input
                   type="date"
                   value={taskForm.deadline}
                   onChange={(e) => setTaskForm({ ...taskForm, deadline: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                 <textarea
                   value={taskForm.description}
                   onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
                   rows={2}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
                   placeholder="Optional details"
                 />
               </div>
@@ -358,102 +362,112 @@ export default function Workspace() {
           </form>
         )}
 
-        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+        {error && <p className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-        <div className="mb-4 flex gap-1 border-b border-gray-200">
+        <div className="mb-4 flex gap-1 overflow-x-auto border-b border-gray-200 dark:border-gray-800">
           <button
             onClick={() => setActiveTab("board")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "board"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Board
           </button>
           <button
             onClick={() => setActiveTab("editor")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "editor"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Shared doc
           </button>
           <button
             onClick={() => setActiveTab("milestones")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "milestones"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Milestones
           </button>
           <button
             onClick={() => setActiveTab("goals")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "goals"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Goals
           </button>
           <button
             onClick={() => setActiveTab("activity")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "activity"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Activity
           </button>
           <button
             onClick={() => setActiveTab("insights")}
-            className={`border-b-2 px-3 py-2 text-sm font-medium transition ${
+            className={`shrink-0 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition ${
               activeTab === "insights"
                 ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             Insights
           </button>
         </div>
 
-        {activeTab === "board" ? (
-          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              {COLUMNS.map((col) => (
-                <KanbanColumn
-                  key={col}
-                  id={col}
-                  tasks={tasks.filter((t) => t.status === col)}
-                  onDelete={handleDeleteTask}
-                  onManageDependencies={setDependencyTask}
-                />
-              ))}
-            </div>
-          </DndContext>
-        ) : activeTab === "editor" ? (
-          <CollaborativeEditor workspaceId={id} />
-        ) : activeTab === "milestones" ? (
-          <MilestoneTracker workspaceId={id} />
-        ) : activeTab === "goals" ? (
-          <GoalsTracker workspaceId={id} allTasks={tasks} />
-        ) : activeTab === "activity" ? (
-          <ActivityFeed workspaceId={id} />
-        ) : (
-          <Insights
-            workspaceId={id}
-            targetDeadline={workspace.targetDeadline}
-            onTargetDeadlineChange={(newDeadline) =>
-              setWorkspace((prev) => ({ ...prev, targetDeadline: newDeadline }))
-            }
-          />
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+          >
+            {activeTab === "board" ? (
+              <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  {COLUMNS.map((col) => (
+                    <KanbanColumn
+                      key={col}
+                      id={col}
+                      tasks={tasks.filter((t) => t.status === col)}
+                      onDelete={handleDeleteTask}
+                      onManageDependencies={setDependencyTask}
+                    />
+                  ))}
+                </div>
+              </DndContext>
+            ) : activeTab === "editor" ? (
+              <CollaborativeEditor workspaceId={id} />
+            ) : activeTab === "milestones" ? (
+              <MilestoneTracker workspaceId={id} />
+            ) : activeTab === "goals" ? (
+              <GoalsTracker workspaceId={id} allTasks={tasks} />
+            ) : activeTab === "activity" ? (
+              <ActivityFeed workspaceId={id} />
+            ) : (
+              <Insights
+                workspaceId={id}
+                targetDeadline={workspace.targetDeadline}
+                onTargetDeadlineChange={(newDeadline) =>
+                  setWorkspace((prev) => ({ ...prev, targetDeadline: newDeadline }))
+                }
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         {dependencyTask && (
           <DependencyModal

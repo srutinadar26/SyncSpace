@@ -160,15 +160,15 @@ export default function CollaborativeEditor({ workspaceId }) {
   };
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2">
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-2">
         <div className="flex items-center gap-2 text-xs">
           <span
             className={`h-2 w-2 rounded-full ${
               status === "online" ? "bg-emerald-500" : status === "connecting" ? "bg-amber-400" : "bg-gray-400"
             }`}
           />
-          <span className="text-gray-500">
+          <span className="text-gray-500 dark:text-gray-400">
             {status === "online" && pendingChanges === 0 && !justSynced && "Live"}
             {status === "online" && pendingChanges > 0 && `Syncing ${pendingChanges} local change${pendingChanges > 1 ? "s" : ""}…`}
             {status === "online" && justSynced && pendingChanges === 0 && "Local changes merged"}
@@ -181,13 +181,13 @@ export default function CollaborativeEditor({ workspaceId }) {
           <button
             onClick={handleSaveVersion}
             disabled={saving}
-            className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+            className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-800/50 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save version"}
           </button>
           <button
             onClick={() => setShowVersions((s) => !s)}
-            className="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-800/50"
           >
             History ({versions.length})
           </button>
@@ -195,23 +195,23 @@ export default function CollaborativeEditor({ workspaceId }) {
       </div>
 
       {showVersions && (
-        <div className="max-h-48 overflow-y-auto border-b border-gray-200 bg-gray-50 px-4 py-2">
+        <div className="max-h-48 overflow-y-auto border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 px-4 py-2">
           {versions.length === 0 ? (
-            <p className="py-2 text-xs text-gray-400">No saved versions yet.</p>
+            <p className="py-2 text-xs text-gray-400 dark:text-gray-500">No saved versions yet.</p>
           ) : (
-            <ul className="divide-y divide-gray-200">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-800">
               {versions.map((v) => (
                 <li key={v._id} className="flex items-center justify-between py-2 text-xs">
                   <div>
-                    <p className="font-medium text-gray-700">{v.label || "Untitled version"}</p>
-                    <p className="text-gray-400">
+                    <p className="font-medium text-gray-700 dark:text-gray-300">{v.label || "Untitled version"}</p>
+                    <p className="text-gray-400 dark:text-gray-500">
                       {new Date(v.savedAt).toLocaleString()} · {v.savedBy?.name || "Unknown"}
                     </p>
                   </div>
                   <button
                     onClick={() => handleRestore(v._id)}
                     disabled={restoring === v._id}
-                    className="rounded-lg border border-gray-300 px-2 py-1 text-[11px] font-medium text-gray-600 hover:bg-white disabled:opacity-60"
+                    className="rounded-lg border border-gray-300 dark:border-gray-700 px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-900 disabled:opacity-60"
                   >
                     {restoring === v._id ? "Restoring…" : "Restore"}
                   </button>

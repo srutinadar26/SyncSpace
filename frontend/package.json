@@ -13,6 +13,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "axios": "^1.19.0",
+    "framer-motion": "^13.1.1",
     "quill": "^2.0.3",
     "quill-cursors": "^5.0.0",
     "react": "^19.1.1",

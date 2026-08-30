@@ -2,9 +2,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 const priorityStyles = {
-  LOW: "bg-gray-100 text-gray-600",
-  MEDIUM: "bg-amber-100 text-amber-700",
-  HIGH: "bg-red-100 text-red-700",
+  LOW: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400",
+  MEDIUM: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+  HIGH: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
 };
 
 export default function TaskCard({ task, onDelete, onManageDependencies }) {
@@ -27,12 +27,12 @@ export default function TaskCard({ task, onDelete, onManageDependencies }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`cursor-grab rounded-lg border bg-white p-3 shadow-sm active:cursor-grabbing ${
-        task.isBlocked ? "border-amber-300" : "border-gray-200"
+      className={`cursor-grab rounded-lg border bg-white dark:bg-gray-900 p-3 shadow-sm active:cursor-grabbing ${
+        task.isBlocked ? "border-amber-300" : "border-gray-200 dark:border-gray-800"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium text-gray-900">{task.title}</p>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{task.title}</p>
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
@@ -47,7 +47,7 @@ export default function TaskCard({ task, onDelete, onManageDependencies }) {
       </div>
 
       {task.description && (
-        <p className="mt-1 line-clamp-2 text-xs text-gray-500">{task.description}</p>
+        <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">{task.description}</p>
       )}
 
       {task.isBlocked && (
@@ -67,7 +67,7 @@ export default function TaskCard({ task, onDelete, onManageDependencies }) {
         {task.deadline && (
           <span
             className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-              isOverdue ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
+              isOverdue ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
             }`}
           >
             {new Date(task.deadline).toLocaleDateString()}
@@ -75,7 +75,7 @@ export default function TaskCard({ task, onDelete, onManageDependencies }) {
         )}
 
         {task.assignedTo && (
-          <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-[var(--color-accent)]">
+          <span className="rounded-full bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 text-[10px] font-medium text-[var(--color-accent)]">
             {task.assignedTo.name}
           </span>
         )}
@@ -87,7 +87,7 @@ export default function TaskCard({ task, onDelete, onManageDependencies }) {
               e.stopPropagation();
               onManageDependencies(task);
             }}
-            className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500 hover:bg-gray-200"
+            className="rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-200"
             title="Manage dependencies"
           >
             🔗 {task.dependsOn?.length || 0}
