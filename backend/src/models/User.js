@@ -28,6 +28,23 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "lead", "mentor"],
       default: "student",
     },
+
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
+
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
+    },
+
+    // Set when failedLoginAttempts crosses the lockout threshold; login is
+    // rejected until this timestamp passes.
+    lockUntil: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

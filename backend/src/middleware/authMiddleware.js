@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Session from "../models/Session.js";
 
 export const protect = async (req, res, next) => {
   try {
@@ -15,6 +16,20 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    if (!decoded.jti) {
+      return res.status(401).json({
+        message: "Session format outdated. Please log in again.",
+      });
+    }
+
+    const session = await Session.findOne({ jti: decoded.jti });
+
+    if (!session || session.revoked) {
+      return res.status(401).json({
+        message: "Session expired or logged out. Please log in again.",
+      });
+    }
+
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
@@ -23,7 +38,13 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    // Fire-and-forget: keep "last active" fresh for the Security Center
+    // without holding up the request on the write.
+    session.lastUsedAt = new Date();
+    session.save().catch(() => {});
+
     req.user = user;
+    req.session = session;
 
     next();
   } catch (error) {

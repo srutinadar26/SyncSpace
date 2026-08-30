@@ -35,7 +35,12 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      // best-effort — clear local state regardless
+    }
     localStorage.removeItem("syncspace_token");
     localStorage.removeItem("syncspace_user");
     setUser(null);
